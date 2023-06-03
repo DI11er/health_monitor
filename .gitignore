@@ -103,7 +103,6 @@ venv.bak/
 # mypy
 .mypy_cache/
 
-# requirements
-requirements.txt
-
 docker-compose.yaml
+
+*.db
