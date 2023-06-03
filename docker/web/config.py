@@ -17,10 +17,12 @@ class Status(Enum):
     stopped = 'grey'
     un_status = None
 
-RESOURCES_DIR = Path('resources')
+CURRENT_DIR = Path.cwd() / env.str('WORK_DIR', default='.')
 
-# logging.basicConfig(filename=RESOURCES_DIR / 'logs' / 'sample.log', level=logging.INFO)
-logging.basicConfig(level=logging.INFO)
+RESOURCES_DIR = CURRENT_DIR / 'resources'
+
+logging.basicConfig(filename=RESOURCES_DIR / 'logs' / 'sample.log', level=logging.INFO)
+#logging.basicConfig(level=logging.INFO)
 
 HOST = env.str('HOST', default='0.0.0.0')
 PORT = env.int('PORT', default=8000)
