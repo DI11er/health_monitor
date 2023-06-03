@@ -1,0 +1,8 @@
+{
+    "name": "PC",
+    "ip": "192.168.4.2",
+    "port": null,
+    "monitoring": true,
+    "notification": true,
+    "position_index": 1
+}
