@@ -1,0 +1,55 @@
+version: "3"
+
+
+services:
+  web:
+    build:
+      context: ./docker/web
+      dockerfile: Dockerfile
+    volumes:
+      - ./docker/web/logs:/usr/src/app/logs
+      - ./docker/web/static:/usr/src/app/static
+    environment:
+      - HOST=
+      - PORT=
+      - DEBUG=True
+      - TIME_ZONE=Europe/Moscow
+      - FORMAT_NOTIFICATION=bot
+      - DISCOVERY_PERIOD_SEC=120
+      - DISCOVERY_WORKER_POOL=10
+      - EXECUTOR_SERVICE_IMPL=MockExecutorService
+      - BOT_TOKEN=
+      - CHAT_ID=
+      - GOTIFY_IP=localhost
+      - GOTIFY_PORT=8081
+    command: 'python app.py'
+
+  # nginx:
+  #   build: 
+  #     context: ./docker/nginx
+  #     dockerfile: Dockerfile
+  #   restart: unless-stopped
+  #   ports:
+  #     - 80:80
+  #     - 81:81
+  #     - 443:443
+  #   volumes:
+  #     # - Путь откуда монтируем:куда монтируем
+  #     - ./docker/web/static:/static:ro
+  #     - ./docker/nginx/config/nginx.conf:/etc/nginx/conf.d/default.conf:ro
+  #   depends_on:
+  #     - web
+
+  gotify:
+    build: 
+      context: ./docker/gotify
+      dockerfile: Dockerfile
+    ports:
+      - 8081:80
+    environment:
+      - TZ=Europe/Moscow
+      - GOTIFY_DEFAULTUSER_PASS=custom
+    volumes:
+      - ./docker/gotify/data:/app/data
+    # docs https://gotify.net/docs/index
+    # API "https://<host>:<port>/message?token=<apptoken>" -F "title=my title" -F "message=my message" -F "priority=5"
