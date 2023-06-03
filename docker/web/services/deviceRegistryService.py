@@ -2,9 +2,9 @@ import logging
 
 import json
 
-from models import Device
+import config
 
-from pathlib import Path
+from models import Device
 
 
 class DeviceRegistryService:
@@ -53,7 +53,7 @@ class DeviceRegistryService:
         )
     
     def _add_device_for_json(self):
-        path_dir = Path('resources', 'devices')
+        path_dir = config.RESOURCES_DIR / 'devices'
         if path_dir:
             try:
                 for i in path_dir.iterdir():
