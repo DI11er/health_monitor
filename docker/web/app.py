@@ -38,7 +38,7 @@ app.logger = logging.getLogger(__name__)
 @app.route('/')
 def index():
     def _pretty_view(value):
-        return '-' if value is None else value
+        return '-' if value is None or not value else value
     
     devices = []
     for device in deviceRegistryService.get_all_devices():
@@ -66,9 +66,9 @@ def index():
 @app.route('/add_device/', methods=['post', 'get'])
 def add_device():
     if request.method == 'POST':
-        name = request.form.get('name', None)
-        ip = request.form.get('ip', None)
-        port = request.form.get('port', None)
+        name = request.form.get('name','')
+        ip = request.form.get('ip', '')
+        port = request.form.get('port', '')
         monitoring = True if request.form.get('monitoring', False) == 'on' else False
         notification = True if request.form.get('notification', False) == 'on' else False
         position_index = request.form.get('position_index', 10)
@@ -94,9 +94,9 @@ def edit_device(id_device):
     }
 
     if request.method == 'POST' and request.form.get('update'):
-        name = request.form.get('name', None)
-        ip = request.form.get('ip', None)
-        port = request.form.get('port', None)
+        name = request.form.get('name', '')
+        ip = request.form.get('ip', '')
+        port = request.form.get('port', '')
         monitoring = True if request.form.get('monitoring', False) == 'on' else False
         notification = True if request.form.get('notification', False) == 'on' else False
         position_index = request.form.get('position_index', 10)
