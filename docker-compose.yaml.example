@@ -25,6 +25,7 @@ services:
       - CHAT_ID=
       - GOTIFY_IP=localhost
       - GOTIFY_PORT=8081
+      - GOTIFT_APP_TOKEN=
     command: 'python app/app.py flask run'
     network_mode: host
 
