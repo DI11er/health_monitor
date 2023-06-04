@@ -14,15 +14,16 @@ class NotificationService(object):
 		return cls._instance
 	
 	def __notify_push(self, message, *args, **kwargs):
-		requests.get(
-			f'https://{config.GOTIFY_IP}:{config.GOTIFY_PORT}/message?token={config.GOTOFY_APP_TOKEN}"' + \
-			f'-F "title={kwargs.pop("title", "Warning")}"' + \
-			f'-F "message={message}" -F "priority={kwargs.pop("priority", 5)}'
-		)
+		requests.post('http://{config.GOTIFY_IP}:{config.GOTIFY_PORT}/message?token={config.GOTIFY_APP_TOKEN}', 
+                    json={
+                        "message": message,
+                        "priority": kwargs.pop('priority', 2),
+                        "title": kwargs.pop('title', 'INFO')
+                })
 
 	def __notify_bot(self, message, *args, **kwargs):
 		requests.get(
-			f'https://api.telegram.org/bot{config.BOT_TOKEN}' + \
+			f'http://api.telegram.org/bot{config.BOT_TOKEN}' + \
 				f'/sendMessage?chat_id={config.CHAT_ID}&text={message}'
 		)
 
