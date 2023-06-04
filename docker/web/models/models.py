@@ -10,19 +10,18 @@ class BaseModel(peewee.Model):
 
     class Meta:
         database = db
-        orders_by = 'id'
 
 
 class Device(BaseModel):
-    name = peewee.CharField(default='')
-    ip = peewee.CharField(max_length=15, default='')
-    port = peewee.IntegerField(null=True, default=None)
+    name = peewee.CharField(null=True)
+    ip = peewee.CharField(max_length=15, null=True)
+    port = peewee.CharField(max_length=5, null=True)
     status = peewee.CharField(default=config.Status.un_status.value, null=True)
     last_discovery = peewee.TimestampField(null=True)
     last_online = peewee.TimestampField(null=True)
-    monitoring = peewee.BooleanField(default=True)
-    notification = peewee.BooleanField(default=False)
-    position_index = peewee.IntegerField(default=1)
+    monitoring = peewee.BooleanField()
+    notification = peewee.BooleanField()
+    position_index = peewee.IntegerField()
 
     class Meta:
         order_by = 'position_index'
