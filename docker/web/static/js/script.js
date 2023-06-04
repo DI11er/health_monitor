@@ -2,7 +2,7 @@ setTimeout(function(){
 
 	location.reload();
 
-}, 10 * 1000);
+}, 30 * 1000);
 
 
 
