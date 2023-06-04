@@ -8,7 +8,7 @@ import time
 
 from models import db, Device
 
-from flask import Flask, render_template, url_for
+from flask import Flask, render_template, url_for, request, redirect
 
 from services.discoveryService import DiscoveryService
 from services.deviceRegistryService import DeviceRegistryService
@@ -55,11 +55,59 @@ def index():
     context = {
         'title': 'Монитор устройств',
         'devices': devices,
+        'menu': (
+            {'url': url_for('add_device'), 'title': 'Регистрация устройства'},
+        )
     }
     deviceRegistryService._add_device_for_json()
 
     return render_template('index.html', **context)
 
+@app.route('/add_device/', methods=['post', 'get'])
+def add_device():
+    if request.method == 'POST':
+        name = request.form.get('name', None)
+        ip = request.form.get('ip', None)
+        port = request.form.get('port', None)
+        monitoring = True if request.form.get('monitoring', False) == 'on' else False
+        notification = True if request.form.get('notification', False) == 'on' else False
+        position_index = request.form.get('position_index', 10)
+        deviceRegistryService.add_device(name=name, ip=ip, port=port, monitoring=monitoring, notification=notification, position_index=position_index)
+        return redirect(url_for('index'))
+    context = {
+        'title': 'Регистрация устройств',
+        'menu': (
+            {'url': url_for('index'), 'title': 'Главное меню'},
+        )
+    }
+    return render_template('add_device.html', **context)
+
+@app.route('/edit_device/<int:id_device>', methods=['post', 'get'])
+def edit_device(id_device):
+    context = {
+        'title': 'Настройка устройств',
+        'menu': (
+            {'url': url_for('index'), 'title': 'Главное меню'},
+            {'url': url_for('add_device'), 'title': 'Регистрация устройства'},
+        ),
+        'device': {}
+    }
+
+    if request.method == 'POST' and request.form.get('update'):
+        name = request.form.get('name', None)
+        ip = request.form.get('ip', None)
+        port = request.form.get('port', None)
+        monitoring = True if request.form.get('monitoring', False) == 'on' else False
+        notification = True if request.form.get('notification', False) == 'on' else False
+        position_index = request.form.get('position_index', 10)
+        deviceRegistryService.update_device(id_device, name=name, ip=ip, port=port, monitoring=monitoring, notification=notification, position_index=position_index)
+        return redirect(url_for('index'))
+    elif request.method == 'POST' and request.form.get('delete'):
+        deviceRegistryService.delete_device(id_device)
+        return redirect(url_for('index'))
+    else:
+        context['device'] = Device.get_by_id(id_device)
+    return render_template('edit_device.html', **context)
 
 if __name__ == "__main__":
     with db:
