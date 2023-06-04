@@ -21,7 +21,7 @@ CURRENT_DIR = Path.cwd() / env.str('WORK_DIR', default='.')
 
 RESOURCES_DIR = CURRENT_DIR / 'resources'
 
-logging.basicConfig(filename=RESOURCES_DIR / 'logs' / 'sample.log', level=logging.INFO)
+logging.basicConfig(filename=RESOURCES_DIR / 'logs' / 'sample.log', level=logging.DEBUG)
 #logging.basicConfig(level=logging.INFO)
 
 HOST = env.str('HOST', default='0.0.0.0')
@@ -42,4 +42,4 @@ CHAT_ID = env.str('CHAT_ID', default='')
 
 GOTIFY_IP = env.str('GOTIFY_IP', default='localhost')
 GOTIFY_PORT = env.int('GOTIFY_PORT', default=8080)
-GOTOFY_APP_TOKEN = env.str('GOTOFY_APP_TOKEN', default='')
+GOTIFY_APP_TOKEN = env.str('GOTIFY_APP_TOKEN', default='')
