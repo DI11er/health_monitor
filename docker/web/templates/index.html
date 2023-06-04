@@ -5,9 +5,9 @@
 
 {% block body %}
     <section>
-        <table>
+        <table class="main_table">
             <tr>
-                <th>Divice name</th>
+                <th>Device name</th>
                 <th>IP</th>
                 <th>Port</th>
                 <th>Status</th>
@@ -17,21 +17,20 @@
             {% for device in devices %}
                 <tr>
                     {% if not device.monitoring %}
-                        <td class="text" style="color: gray;">{{ device.name }}</td>
+                        <td class="text"><a href="{{ url_for('edit_device', id_device=device.id)}}" style="color: gray;">{{ device.name }}</a></td>
                         <td class="text" style="color: gray;">{{ device.ip }}</td>
                         <td class="text" style="color: gray;">{{ device.port }}</td>
                         <td align="center"><div class="circle" style="background-color: gray"> </div></td>
                         <td class="text" style="color: gray;">{{ device.last_discovery }}</td>
                         <td class="text" style="color: gray;">{{ device.last_online }}</td>  
                     {% else %}
-                        <td class="text">{{ device.name }}</td>
+                        <td class="text"><a href="{{ url_for('edit_device', id_device=device.id)}}">{{ device.name }}</a></td>
                         <td class="text">{{ device.ip }}</td>
                         <td class="text">{{ device.port }}</td>
                         <td align="center"><div class="circle" style="background-color: {{ device.status }};"> </div></td>
                         <td class="text">{{ device.last_discovery }}</td>
                         <td class="text">{{ device.last_online }}</td>                          
                     {% endif %}                     
-
                 </tr>
             {% endfor %}
         </table>
