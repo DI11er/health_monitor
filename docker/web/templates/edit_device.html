@@ -1,0 +1,53 @@
+{% extends 'base.html' %}
+
+
+{% block title %}{{ title }}{% endblock title %}
+
+{% block body %}
+    <div id="form">
+        <form action="" method="post" name="edit_form" class="form edit_form">
+            <h1>Форма редактирования устройства</h1>
+            <fieldset>
+                <div class="form-group">
+                    <label for="name">Название устройства:</label>
+                    <input type="text" name="name" id="name" class="input" required value="{{ device.name }}">
+                </div>
+                <div class="form-group">
+                    <label for="ip">Ip-адрес устройства::</label>
+                    <input type="text" name="ip" maxlength="15" 
+                    pattern="^(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)\.(25[0-5]|2[0-4][0-9]|[01]?[0-9][0-9]?)" 
+                    class="input" value="{{ device.ip }}">
+                </div>
+                <div class="form-group">
+                    <label for="port">Порт:</label>
+                    <input type="text" name="port" id="port" 
+                    pattern="^([1-9][0-9]{0,3}|[1-5][0-9]{4}|6[0-4][0-9]{3}|65[0-4][0-9]{2}|655[0-2][0-9]|6553[0-5])$" 
+                    class="input" value="{{ device.port }}">
+                </div>
+                <div class="form-group">
+                    <label for="monitoring">Отслеживать:</label>
+                    {% if device.monitoring %}
+                        <input type="checkbox" name="monitoring" id="monitoring" checked class="input">
+                    {% else %}
+                        <input type="checkbox" name="monitoring" id="monitoring" class="input">      
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="notification">Уведомлять:</label>
+                    {% if device.notification %}
+                        <input type="checkbox" name="notification" id="notification" checked class="input">
+                    {% else %}
+                        <input type="checkbox" name="notification" id="notification" class="input">      
+                    {% endif %}
+                </div>
+                <div class="form-group">
+                    <label for="position_index">Порядок:</label>
+                    <input type="text" name="position_index" id="position_index" class="input" value="{{ device.position_index }}">
+                </div>
+                <input type="submit" value="Обновить" class="btn submit" name="update">
+                <input type="reset" value="Очистить" class="btn reset">
+                <input type="submit" value="Удалить устройство" class="btn delete" name="delete">
+            </fieldset>
+        </form>
+    </div>
+{% endblock body %}
