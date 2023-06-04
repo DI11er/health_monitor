@@ -14,7 +14,7 @@ class NotificationService(object):
 		return cls._instance
 	
 	def __notify_push(self, message, *args, **kwargs):
-		requests.post(f'http://{config.GOTIFY_IP}:{config.GOTIFY_PORT}/message?token={config.GOTOFY_APP_TOKEN}', json={
+		requests.post(f'http://{config.GOTIFY_IP}:{config.GOTIFY_PORT}/message?token={config.GOTIFY_APP_TOKEN}', json={
 			"message": message,
 			"priority": kwargs.pop('priority', 5),
 			"title": kwargs.pop('title', 'INFO')
