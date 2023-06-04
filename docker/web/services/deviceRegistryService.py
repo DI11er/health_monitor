@@ -23,13 +23,13 @@ class DeviceRegistryService:
         self._log = logging.getLogger(__name__)
 
     def get_all_devices(self):
-        return Device.select()
+        return Device.select().order_by(Device.position_index)
     
     def update_device(self, id, *args, **kwargs):
         """ name: str, ip: str, port: str, last_discovery: datetime, 
         last_online: datetime, monitoring: bool, notification: bool """
         d: Device = Device.get_by_id(pk=id)
-        d.name=kwargs.pop('name', '')
+        d.name=kwargs.pop('name', None)
         d.ip = kwargs.pop('ip', None)
         d.port = kwargs.pop('port', None)
         d.monitoring = kwargs.pop('monitoring', True)
@@ -44,7 +44,7 @@ class DeviceRegistryService:
         """ name: str, ip: str, port: int, last_discovery: datetime, 
         last_online: datetime, monitoring: bool, notification: bool """
         Device.create(
-            name=kwargs.pop('name', ''), 
+            name=kwargs.pop('name', None), 
             ip = kwargs.pop('ip', None),
             port = kwargs.pop('port', None),
             monitoring = kwargs.pop('monitoring', True),
