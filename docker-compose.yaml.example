@@ -28,19 +28,3 @@ services:
       - GOTIFT_APP_TOKEN=
     command: 'python app/app.py flask run'
     network_mode: host
-
-  # nginx:
-  #   build: 
-  #     context: ./docker/nginx
-  #     dockerfile: Dockerfile
-  #   restart: unless-stopped
-  #   ports:
-  #     - 80:80
-  #     - 81:81
-  #     - 443:443
-  #   volumes:
-  #     # - Путь откуда монтируем:куда монтируем
-  #     - ./docker/web/static:/static:ro
-  #     - ./docker/nginx/config/nginx.conf:/etc/nginx/conf.d/default.conf:ro
-  #   depends_on:
-  #     - web
