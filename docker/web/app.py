@@ -6,6 +6,8 @@ import threading
 
 import time
 
+import pytz
+
 from models import db, Device
 
 from flask import Flask, render_template, url_for, request, redirect
@@ -14,6 +16,7 @@ from services.discoveryService import DiscoveryService
 from services.deviceRegistryService import DeviceRegistryService
 from services.notificationService import NotificationService
 
+from datetime import datetime
 
 notificationService = NotificationService.get_instance()
 discoveryService = DiscoveryService.get_instance()
@@ -32,13 +35,22 @@ threading.Thread(target=do_discovery, args=(), daemon=True).start()
 
 
 app = Flask(__name__)
-app.logger = logging.getLogger(__name__)
+_log = logging.getLogger(__name__)
 
 
 @app.route('/')
 def index():
     def _pretty_view(value):
         return '-' if value is None or not value else value
+
+    def _pretty_datetime(data):
+        try:
+            if data is None:
+                return "-"
+            return datetime.fromtimestamp(data, config.TIME_ZONE).strftime("%d.%m.%Y %H:%M:%S")
+        except Exception as e:
+            _log.error(f"Cannot format for datetime: {e}")
+        return "-"
     
     devices = []
     for device in deviceRegistryService.get_all_devices():
@@ -48,8 +60,8 @@ def index():
             'ip': _pretty_view(device.ip),
             'port': _pretty_view(device.port),
             'status': device.status,
-            'last_discovery': _pretty_view(device.last_discovery),
-            'last_online': _pretty_view(device.last_online),
+            'last_discovery': _pretty_datetime(device.last_discovery),
+            'last_online': _pretty_datetime(device.last_online),
             'monitoring': device.monitoring
         })
     context = {
@@ -72,7 +84,14 @@ def add_device():
         monitoring = True if request.form.get('monitoring', False) == 'on' else False
         notification = True if request.form.get('notification', False) == 'on' else False
         position_index = request.form.get('position_index', 10)
-        deviceRegistryService.add_device(name=name, ip=ip, port=port, monitoring=monitoring, notification=notification, position_index=position_index)
+        deviceRegistryService.add_device(
+            name=name, 
+            ip=ip, 
+            port=port, 
+            monitoring=monitoring, 
+            notification=notification, 
+            position_index=position_index
+        )
         return redirect(url_for('index'))
     context = {
         'title': 'Регистрация устройств',
@@ -115,7 +134,7 @@ if __name__ == "__main__":
             db.create_tables([Device])
 
     app.run(
-        host=config.HOST,
-        port=config.PORT,
+        host='0.0.0.0',
+        port=5090,
         debug=config.DEBUG
     )
