@@ -23,6 +23,7 @@ class DeviceRegistryService:
         self._log = logging.getLogger(__name__)
 
     def get_all_devices(self):
+        self._add_device_for_json()
         return Device.select().order_by(Device.position_index)
     
     def update_device(self, id, *args, **kwargs):
