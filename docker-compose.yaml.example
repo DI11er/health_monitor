@@ -24,7 +24,7 @@ services:
       - EXECUTOR_SERVICE_IMPL=PingExecutorService
       - BOT_TOKEN=
       - CHAT_ID=
-      - GOTIFY_IP=localhost
-      - GOTIFY_PORT=8081
-      - GOTIFT_APP_TOKEN=
+      - GOTIFY_IP=
+      - GOTIFY_PORT=
+      - GOTIFY_APP_TOKEN=
     command: 'python app/app.py flask run'
