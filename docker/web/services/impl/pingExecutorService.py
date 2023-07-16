@@ -30,8 +30,9 @@ class PingExecutorService:
         elif self._os_info in ('linux', 'darwin'):
             command = ['ping', '-c', f'{count}', '-W', f'{timeout}', f'{ip}']
 
-        response = subprocess.call(command)
-        self._log.debug(f'Device: {ip} Response {response}')
-        if not response:
-            return True
-        return False
+        response = subprocess.Popen(command, stdout=subprocess.PIPE, stderr=subprocess.PIPE)
+        _ = response.communicate()
+        response_code = response.returncode
+        self._log.debug(f'Device: {ip} Response {response_code}')
+        
+        return response_code == 0
