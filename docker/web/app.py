@@ -22,20 +22,22 @@ notificationService = NotificationService.get_instance()
 discoveryService = DiscoveryService.get_instance()
 deviceRegistryService = DeviceRegistryService.get_instance()
 
+_log = logging.getLogger(__name__)
+
 def do_discovery():
     while True:
         try:
             discoveryService.discover_divices()
         except Exception as _ex:
-            notificationService.notify(f'ERROR DISCOVERY! {_ex}')
+            message = f'ERROR DISCOVERY! {_ex}'
+            notificationService.notify(message, title='ERROR', priority=10)
+            _log.error(message)
         time.sleep(config.DISCOVERY_PERIOD_SEC)
-
 
 threading.Thread(target=do_discovery, args=(), daemon=True).start()
 
 
 app = Flask(__name__)
-_log = logging.getLogger(__name__)
 
 
 @app.route('/')
@@ -45,16 +47,14 @@ def index():
 
     def _pretty_datetime(data):
         try:
-            if data is None:
-                return "-"
             return datetime.fromtimestamp(data, config.TIME_ZONE).strftime("%d.%m.%Y %H:%M:%S")
         except Exception as e:
             _log.error(f"Cannot format for datetime: {e}")
         return "-"
-    
-    devices = []
-    for device in deviceRegistryService.get_all_devices():
-        devices.append({
+
+    context = {
+        'title': 'Монитор устройств',
+        'devices': [{
             'id': device.id,
             'name': _pretty_view(device.name),
             'ip': _pretty_view(device.ip),
@@ -63,15 +63,11 @@ def index():
             'last_discovery': _pretty_datetime(device.last_discovery),
             'last_online': _pretty_datetime(device.last_online),
             'monitoring': device.monitoring
-        })
-    context = {
-        'title': 'Монитор устройств',
-        'devices': devices,
+        } for device in deviceRegistryService.get_all_devices()],
         'menu': (
             {'url': url_for('add_device'), 'title': 'Регистрация устройства'},
         )
     }
-    deviceRegistryService._add_device_for_json()
 
     return render_template('index.html', **context)
 
@@ -84,6 +80,7 @@ def add_device():
         monitoring = True if request.form.get('monitoring', False) == 'on' else False
         notification = True if request.form.get('notification', False) == 'on' else False
         position_index = request.form.get('position_index', 10)
+        
         deviceRegistryService.add_device(
             name=name, 
             ip=ip, 
@@ -94,9 +91,8 @@ def add_device():
         )
         return redirect(url_for('index'))
     context = {
-        'title': 'Регистрация устройств',
+        'title': 'Регистрация устройства',
         'menu': (
-            {'url': url_for('index'), 'title': 'Главное меню'},
         )
     }
     return render_template('add_device.html', **context)
@@ -104,12 +100,10 @@ def add_device():
 @app.route('/edit_device/<int:id_device>', methods=['post', 'get'])
 def edit_device(id_device):
     context = {
-        'title': 'Настройка устройств',
+        'title': 'Настройка устройства',
         'menu': (
-            {'url': url_for('index'), 'title': 'Главное меню'},
             {'url': url_for('add_device'), 'title': 'Регистрация устройства'},
-        ),
-        'device': {}
+        )
     }
 
     if request.method == 'POST' and request.form.get('update'):
@@ -119,7 +113,16 @@ def edit_device(id_device):
         monitoring = True if request.form.get('monitoring', False) == 'on' else False
         notification = True if request.form.get('notification', False) == 'on' else False
         position_index = request.form.get('position_index', 10)
-        deviceRegistryService.update_device(id_device, name=name, ip=ip, port=port, monitoring=monitoring, notification=notification, position_index=position_index)
+        
+        deviceRegistryService.update_device(
+            id_device, 
+            name=name, 
+            ip=ip, 
+            port=port, 
+            monitoring=monitoring, 
+            notification=notification, 
+            position_index=position_index
+        )
         return redirect(url_for('index'))
     elif request.method == 'POST' and request.form.get('delete'):
         deviceRegistryService.delete_device(id_device)
@@ -127,6 +130,8 @@ def edit_device(id_device):
     else:
         context['device'] = Device.get_by_id(id_device)
     return render_template('edit_device.html', **context)
+
+
 
 if __name__ == "__main__":
     with db:
@@ -136,5 +141,6 @@ if __name__ == "__main__":
     app.run(
         host='0.0.0.0',
         port=5090,
-        debug=config.DEBUG
+        debug=config.DEBUG,
+        use_reloader=False # отключает автоматическую перезагрузку приложения при изменении в коде
     )
