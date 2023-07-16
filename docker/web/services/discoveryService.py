@@ -24,19 +24,16 @@ class DiscoveryService:
     def __init__(self) -> None:
         self._deviceRegistryService = DeviceRegistryService.get_instance()
         self._discoveryWorkerPool = config.DISCOVERY_WORKER_POOL
-
-    def discover_divices(self):
-        queue = Queue()
-        devices: Device = self._deviceRegistryService.get_all_devices()
-
-        for _ in range(len(devices) if len(devices) < self._discoveryWorkerPool else self._discoveryWorkerPool):
-            t = DiscoveryWorker(queue)
+        self._queue = Queue()
+        for _ in range(self._discoveryWorkerPool):
+            t = DiscoveryWorker(self._queue)
             t.setDaemon(True)
             t.start()
 
-        for device in devices:
+    def discover_divices(self):
+        for device in self._deviceRegistryService.get_all_devices():
             if device.monitoring:
-                queue.put(device)
-        
-        queue.join()
+                self._queue.put(device)
+
+        self._queue.join()
 
