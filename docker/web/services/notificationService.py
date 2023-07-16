@@ -22,7 +22,7 @@ class NotificationService(object):
 
 	def __notify_bot(self, message, *args, **kwargs):
 		requests.get(
-			f'http://api.telegram.org/bot{config.BOT_TOKEN}' + \
+			f'https://api.telegram.org/bot{config.BOT_TOKEN}' + \
 				f'/sendMessage?chat_id={config.CHAT_ID}&text={message}'
 		)
 
