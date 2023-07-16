@@ -6,18 +6,19 @@ services:
     build:
       context: ./docker/web
       dockerfile: Dockerfile
+    ports:
+      - 5090:5090
     volumes:
       - ./docker/web/static:/app/static
       - ./docker/web/resources/db:/app/resources/db
       - ./docker/web/resources/logs:/app/resources/logs
       - ./docker/web/resources/devices:/app/resources/devices
     environment:
-      - HOST=0.0.0.0
-      - PORT=5090
+      - LOG_MODE=dev # Способ логирования (dev/prod) dev логирования на уровне DEBUG в консоль, prod логирование на уровне INFO в файл log.log в каталоге resources/logs
       - DEBUG=True
-      - WORK_DIR=app
+      - WORK_DIR=app # Указывается каталог указанный в Dockerfile
       - TIME_ZONE=Europe/Moscow
-      - FORMAT_NOTIFICATION=bot
+      - FORMAT_NOTIFICATION= # bot, push, all (bot + push)
       - DISCOVERY_PERIOD_SEC=30
       - DISCOVERY_WORKER_POOL=10
       - EXECUTOR_SERVICE_IMPL=PingExecutorService
@@ -27,4 +28,3 @@ services:
       - GOTIFY_PORT=8081
       - GOTIFT_APP_TOKEN=
     command: 'python app/app.py flask run'
-    network_mode: host
