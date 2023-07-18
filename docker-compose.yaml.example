@@ -21,9 +21,9 @@ services:
       - FORMAT_NOTIFICATION= # bot, push, all (bot + push)
       - DISCOVERY_PERIOD_SEC=30
       - DISCOVERY_WORKER_POOL=10
-      - EXECUTOR_SERVICE_IMPL=PingExecutorService
+      - EXECUTOR_SERVICE_IMPL=PingExecutorService # PingExecutorService - сервис отправляющий ping-запросы, MockExecutorService - сервис использующийся для тестирования системы отправляет случайный искуственный ответ.
       - BOT_TOKEN=
-      - CHAT_ID=
+      - CHATS_ID=
       - GOTIFY_IP=
       - GOTIFY_PORT=
       - GOTIFY_APP_TOKEN=
