@@ -48,7 +48,7 @@ class DiscoveryWorker(threading.Thread):
             if device_dto.status in (config.Status.live.value, config.Status.un_status.value): 
                 device_dto.status = config.Status.dead.value
                 if device_dto.notification:
-                    self._ns.notify(message=f'{device_dto.name} is offline!', title='WARNING', priority=10)
+                    self._ns.notify(message=f'{device_dto.name} is offline!', title='WARNING', priority=5)
         else:
             device_dto.last_online = datetime.now().timestamp()
             if device_dto.status in (config.Status.dead.value, config.Status.un_status.value):
