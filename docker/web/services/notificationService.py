@@ -21,10 +21,12 @@ class NotificationService(object):
 		})
 
 	def __notify_bot(self, message, *args, **kwargs):
-		requests.post(f'https://api.telegram.org/bot{config.BOT_TOKEN}/sendMessage', json={
-			'chat_id': config.CHAT_ID,
-			'text': message
-		})
+		with requests.Session() as sess:
+			for chat_id in config.CHATS_ID:
+				sess.post(f'https://api.telegram.org/bot{config.BOT_TOKEN}/sendMessage', json={
+					'chat_id': chat_id,
+					'text': message
+				})
 
 	def notify(self, message, *args, **kwargs):
 		""" kwargs: title, priority = 5 """
