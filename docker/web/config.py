@@ -58,7 +58,7 @@ IMPL = env.str('EXECUTOR_SERVICE_IMPL', 'PingExecutorService')
 
 # Telegram_bot
 BOT_TOKEN = env.str('BOT_TOKEN', default='')
-CHAT_ID = env.str('CHAT_ID', default='')
+CHATS_ID = env.list('CHATS_ID', default=[])
 
 # Gotify_server
 GOTIFY_IP = env.str('GOTIFY_IP', default='localhost')
