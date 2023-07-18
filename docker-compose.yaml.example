@@ -28,3 +28,4 @@ services:
       - GOTIFY_PORT=
       - GOTIFY_APP_TOKEN=
     command: 'python app/app.py flask run'
+    restart: unless-stopped
