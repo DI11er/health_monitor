@@ -129,6 +129,7 @@ def edit_device(id_device):
         return redirect(url_for('index'))
     else:
         context['device'] = Device.get_by_id(id_device)
+        context['url_device'] = f"http://{context['device'].ip}:{context['device'].port}"
     return render_template('edit_device.html', **context)
 
 
