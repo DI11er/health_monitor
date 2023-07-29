@@ -8,6 +8,8 @@ import time
 
 import pytz
 
+import requests
+
 from models import db, Device
 
 from flask import Flask, render_template, url_for, request, redirect
@@ -129,7 +131,15 @@ def edit_device(id_device):
         return redirect(url_for('index'))
     else:
         context['device'] = Device.get_by_id(id_device)
-        context['url_device'] = f"http://{context['device'].ip}:{context['device'].port}"
+        if context['device'].port:
+            context['url_device'] = f"http://{context['device'].ip}:{context['device'].port}"
+        else:
+            try:
+                requests.get(f"http://{context['device'].ip}", timeout=1)
+                context['url_device'] = f"http://{context['device'].ip}"
+            except:
+                _log.info('На устройстве отсутствует веб-сервер')
+
     return render_template('edit_device.html', **context)
 
 
