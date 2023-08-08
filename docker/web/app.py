@@ -49,9 +49,10 @@ def index():
 
     def _pretty_datetime(data):
         try:
-            return datetime.fromtimestamp(data, config.TIME_ZONE).strftime("%d.%m.%Y %H:%M:%S")
-        except Exception as e:
-            _log.error(f"Cannot format for datetime: {e}")
+            if data is not None:
+                return datetime.fromtimestamp(data, config.TIME_ZONE).strftime("%d.%m.%Y %H:%M:%S")
+        except Exception as _ex:
+            _log.error(f"Cannot format for datetime: {_ex}")
         return "-"
 
     context = {
