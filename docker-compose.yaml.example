@@ -18,14 +18,35 @@ services:
       - DEBUG=True
       - WORK_DIR=app # Указывается каталог указанный в Dockerfile
       - TIME_ZONE=Europe/Moscow
-      - FORMAT_NOTIFICATION= # bot, push, all (bot + push)
-      - DISCOVERY_PERIOD_SEC=30
-      - DISCOVERY_WORKER_POOL=10
-      - EXECUTOR_SERVICE_IMPL=PingExecutorService # PingExecutorService - сервис отправляющий ping-запросы, MockExecutorService - сервис использующийся для тестирования системы отправляет случайный искуственный ответ.
+      - FORMAT_NOTIFICATION=all # bot, push, all (bot + push)
+      - DISCOVERY_PERIOD_SEC=60
+      - DISCOVERY_WORKER_POOL=15
+      - EXECUTOR_SERVICE_IMPL=PingExecutorService # PingExecutorService - сервис отправляющий ping-запросы, MockExecutorService - сервис используемый для тестирования системы, отправляет случайный ответ.
       - BOT_TOKEN=
       - CHATS_ID=
       - GOTIFY_IP=
       - GOTIFY_PORT=
       - GOTIFY_APP_TOKEN=
+      - POSTGRES_DB=web_db
+      - POSTGRES_HOST=db
+      - POSTGRES_USER=web_app
+      - POSTGRES_PASSWORD=web_app
+      - POSTGRES_PORT=5432
     command: 'python app/app.py flask run'
     restart: unless-stopped
+    depends_on:
+      - db
+
+  db:
+    build:
+      context: ./docker/postgres
+      dockerfile: Dockerfile
+    restart: unless-stopped
+    volumes:
+      - ./docker/postgres/database:/var/lib/postgresql/data
+    environment:
+      - POSTGRES_DB=web_db
+      - POSTGRES_USER=web_app
+      - POSTGRES_PASSWORD=web_app
+      - TZ=Europe/Moscow
+
