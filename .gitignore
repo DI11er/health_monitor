@@ -106,3 +106,5 @@ venv.bak/
 docker-compose.yaml
 
 *.db
+
+/docker/postgres/database
