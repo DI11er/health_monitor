@@ -64,3 +64,10 @@ CHATS_ID = env.list('CHATS_ID', default=[])
 GOTIFY_IP = env.str('GOTIFY_IP', default='localhost')
 GOTIFY_PORT = env.int('GOTIFY_PORT', default=8080)
 GOTIFY_APP_TOKEN = env.str('GOTIFY_APP_TOKEN', default='')
+
+# DB Postgres
+POSTGRES_DB = env.str('POSTGRES_DB', default='web_db')
+POSTGRES_HOST = env.str('POSTGRES_HOST', default='localhost')
+POSTGRES_USER = env.str('POSTGRES_USER', default='web_db')
+POSTGRES_PASSWORD = env.str('POSTGRES_PASSWORD', default='web_db')
+POSTGRES_PORT = env.int('POSTGRES_PORT', default=5432)
